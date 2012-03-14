@@ -27,7 +27,6 @@ object ScaleThatVector extends App {
 
   // Omit uninteresting events and order by start time
   val events = allEvents
-      .filter (!_.c.name.matches("Level[1-4]"))
       .filter (e => e.end - e.start >= msPerPixel)
       .sortBy (_.start)
 
