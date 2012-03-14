@@ -70,12 +70,20 @@ object ScaleThatVector extends App {
     val x1 = time2px(event.start)
     val x2 = time2px(event.end)
     val gapped = (event.start - maxEnd) >= msPerPixel * 3
-    val gapLabel = if (gapped) "(%.1f s gap) ".format((event.start - maxEnd)/1000d) else ""
-    val nodes =
-        <rect x={ x1.toString } y={ y.toString } width={(x2 - x1).toString} height={lineHeight.toString} transform="translate(0.5, 0.5)" style={ "stroke: #a0a0a0; fill: #%s;".format(if (gapped) "ff6600" else "e0e0e0") }/> ++
+    var nodes =
+        <rect x={ x1.toString } y={ y.toString } width={(x2 - x1).toString} height={lineHeight.toString} transform="translate(0.5, 0.5)" style="stroke: #a0a0a0; fill: #e0e0e0;"/> ++
         <text transform={ "translate(%d,%d)".format(x1, y) }
           style={ "font-family: sans-serif; font-size: 9pt; fill: #%s; opacity: 0.7; font-weight: %s;".format(if (gapped) "ff0000" else "000000", if (gapped) "bold" else "normal") }
-          dx="4" dy="12" x={ (x2 - x1).toString } y="0">{ gapLabel + label }</text>
+          dx="4" dy="12" x={ (x2 - x1).toString } y="0">{ label }</text>
+    if (gapped) {
+      val gx1 = time2px(maxEnd)
+      val gx2 = x1
+      nodes ++=
+          <rect x={gx1.toString} y={y.toString} width={(gx2 - gx1).toString} height={lineHeight.toString} transform="translate(0.5, 0.5)" style="stroke: #a0a0a0; fill: #c27a7a; fill-opacity: 0.25;"/> ++
+          <text transform={"translate(%d,%d)".format(gx1, y)}
+            style="font-family: sans-serif; font-size: 9pt; fill: #000000; opacity: 0.7; font-weight: bold;"
+            dx="4" dy="13" x="0" y="0">{"%.1fs".format((event.start - maxEnd)/1000d)}</text>
+    }
     y += lineHeight
     maxEnd = maxEnd max event.end
     nodes
