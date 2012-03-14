@@ -1,0 +1,5 @@
+#!/bin/bash
+mine_dir=${1:-~/IEM/Log}
+echo Mining directory $mine_dir
+cd $mine_dir
+grep '\[boot\]' *.log /dev/null | sed 's/\.log:\[boot\]//'
