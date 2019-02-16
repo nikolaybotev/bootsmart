@@ -4,18 +4,18 @@ import java.io.PrintWriter
 import java.nio.charset.Charset
 import java.nio.file.Files
 import java.nio.file.Paths
-import scala.collection.JavaConversions.asScalaBuffer
+import scala.collection.JavaConverters._
 
 object ScaleThatVector extends App {
 
   case class Component(container: String, level: Int, name: String)
   case class Event(c: Component, start: Long, end: Long)
 
-  val inputFile = if (args.size > 0) args(0) else "nsboot"
+  val inputFile = if (args.length > 0) args(0) else "nsboot"
   println("Reading file " + inputFile)
 
   // Read the text file in memory
-  val lines = Files.readAllLines(Paths.get(inputFile), Charset.defaultCharset)
+  val lines = Files.readAllLines(Paths.get(inputFile), Charset.defaultCharset).asScala
 
   val allEvents = lines map { line =>
     val fields = line.split(" ")
@@ -27,11 +27,11 @@ object ScaleThatVector extends App {
 
   // Omit uninteresting events and order by start time
   val events = allEvents
-      .filter (e => e.end - e.start >= msPerPixel)
-      .sortBy (_.start)
+      .filter(e => e.end - e.start >= msPerPixel)
+      .sortBy(_.start)
 
-  val startTime = events map (_ start) reduce (_ min _)
-  val endTime = events map (_ end) reduce (_ max _)
+  val startTime = events.map(_.start).min
+  val endTime = events.map(_.end).max
   val timeSpan = ((endTime - startTime) / 5000d).ceil.toInt * 5000
 
   val lineHeight = 16
@@ -106,7 +106,7 @@ object ScaleThatVector extends App {
   try {
     file.append(svg.toString)
   } finally {
-    file.close
+    file.close()
   }
 
 }
