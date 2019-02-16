@@ -1,11 +1,9 @@
 name := "bootsmart"
 
+ThisBuild / scalaVersion := "2.12.8"
+
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
 retrieveManaged := true
 
-EclipseKeys.executionEnvironment := Some(EclipseExecutionEnvironment.JavaSE17)
-
-EclipseKeys.withSource := true
-
-EclipseKeys.configurations := Set(Compile)
+libraryDependencies += "org.scala-lang.modules" % "scala-xml_2.12" % "1.1.1"
